@@ -1,0 +1,51 @@
+# Taken from https://github.com/husky/husky/blob/8cd932ac230b87ba0ce59b75908b759f4065a6c1/husky_navigation/config/costmap_exploration.yaml
+track_unknown_space: true
+global_frame: map
+rolling_window: false
+robot_base_frame: base_link
+footprint: [[0.1, 0.0], [0.0, 0.1], [-0.1, 0.0], [0.0, -0.1]]
+
+plugins: 
+- {name: static,            type: "costmap_2d::StaticLayer"}
+- {name: explore_boundary,  type: "frontier_exploration::BoundedExploreLayer"}
+#Can disable sensor layer if gmapping is fast enough to update scans
+- {name: sensor,            type: "costmap_2d::ObstacleLayer"}
+- {name: inflation,         type: "costmap_2d::InflationLayer"}
+
+explore_boundary:
+  resize_to_boundary: false
+  frontier_travel_point: middle
+  #set to false for gmapping, true if re-exploring a known area
+  explore_clear_space: true
+
+sensor:
+  observation_sources: laser
+  laser: {data_type: LaserScan, clearing: true, marking: true, topic: scan, inf_is_valid: true, raytrace_range: $(arg sensor_range), obstacle_range: $(arg sensor_range)}
+
+inflation:
+  inflation_radius: 0.15
+
+
+# Other paramertors
+horizon: 5
+discount: 10.0
+schedule_a: 4
+schedule_b: 3
+num_kernels: 5
+std_vel: 0.2
+std_ang: 0.1
+std_fr: 0.02
+num_particles: 10
+resample_thresh: 0.33
+
+allow_unknown_targets: true
+default_ctrl_duration: 1.0
+
+laser_min_angle_deg: -90.0
+laser_max_angle_deg: 90.0
+laser_angle_step_deg: 5.0
+laser_max_dist_m: 4.0
+p_false_pos: 0.05
+p_false_neg: 0.05
+
+min_reward: 1.5
